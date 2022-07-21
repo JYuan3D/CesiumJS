@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8" />
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <title>Hello World!</title>
+    <!-- step1: 引入Cesium.js，该javascript定义了Cesium object -->
+    <script src="../Build/Cesium/Cesium.js"></script>
+    <style>
+      /* step2: 导入Cesium Viewer widget的样式 */
+      @import url(../Build/Cesium/Widgets/widgets.css);
+      html,
+      body,
+      #cesiumContainer {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- step3: cesium view存在于该div中 -->
+    <div id="cesiumContainer"></div>
+    <script>
+      // step4: 最终创建cesium viewer
+      const viewer = new Cesium.Viewer("cesiumContainer");
+    </script>
+  </body>
+</html>
