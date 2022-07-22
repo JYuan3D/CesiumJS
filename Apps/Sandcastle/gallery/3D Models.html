@@ -22,6 +22,7 @@
     class="sandcastle-loading"
     data-sandcastle-bucket="bucket-requirejs.html"
   >
+    <!-- 已学习 -->
     <style>
       @import url(../templates/bucket.css);
     </style>
@@ -50,39 +51,63 @@
           viewer.entities.removeAll();
 
           // 三维笛卡尔坐标 -- Cartesian3
-          // 从以度为单位的经度和纬度值返回 Cartesian3 位置
+          // fromDegrees: 通过经度、纬度（以度为单位），返回Cartesian3位置
           const position = Cesium.Cartesian3.fromDegrees(
-            -123.0744619,
-            44.0503706,
-            height
+            -123.0744619, // 经度
+            44.0503706, // 纬度
+            height // 高度
           );
+          // Math.toRadians(degrees): 将度数转换为弧度
           const heading = Cesium.Math.toRadians(0);
           const pitch = 0; // 面向
           const roll = 0; // 翻转
-          // 一个表示为航向、俯仰和滚动的旋转。
+          // HeadingPitchRoll是一个表示为航向、俯仰和滚动的旋转。
           // 航向是围绕负z轴的旋转。
           // 俯仰是围绕负y轴的旋转。
           // 滚动是围绕正x轴的旋转。
+          /**
+           * heading: 以弧度表示的航向部件
+           * pitch: 以弧度表示的俯仰部件
+           * roll: 以弧度表示的滚动部件
+           */
           const hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-          console.log('hpr', hpr);
+          /**
+           * Transforms: 包含将位置转换为各种参考系的函数
+           * headingPitchRollQuaternion:
+           * 从参考坐标系计算四元数，坐标轴从以提供的原点为中心的航向-俯仰-滚动角计算。
+           * 航向是从当地北向的旋转，其中正角向东增加。
+           * 俯仰是当地东西向平面的旋转。
+           * 正俯仰角在平面上方。
+           * 负俯仰角位于平面下方。
+           * 滚动是围绕局部东轴应用的第一个旋转。
+           */
           const orientation = Cesium.Transforms.headingPitchRollQuaternion(
-            position,
-            hpr
+            position, // 三维笛卡尔坐标 -- Cartesian3
+            hpr // 航向、俯仰和滚动的旋转值
           );
 
-          // 获取未绑定到特定数据源的实体集合。
-          // 这是dataSourceDisplay.defaultDataSource.entities的快捷方式。
+          /**
+           * entities: 获取未绑定到特定数据源的实体集合。这是dataSourceDisplay.defaultDataSource快捷方式。
+           * add(entity): 将实体添加到集合中。
+           * 
+           * Entity: new Cesium.Entity(options)
+           * 实体实例将多种形式对的可视化聚合到一个高级对象中。
+           * 它们可以手动创建并添加到Viewer#entities或由数据源生成，例如CzmlDataSource 和 GeoJsonDataSource。
+           */
           const entity = viewer.entities.add({
-            name: url,
-            position: position,
-            orientation: orientation,
-            model: {
-              uri: url,
+            name: url, // name: 获取或设置对象的名称，该名称供最终用户使用，无需唯一。
+            position: position, // 获取或设置位置。
+            orientation: orientation, // 获取或设置方向
+            model: { // 获取或设置模型(ModelGraphics)
+              uri: url, // 获取或设置字符串属性，指定Gltf资产的URI
+              // 获取或设置数字属性，指定模型的近似最小像素大小，而不考虑缩放。这可用于确保模型即使在查看器缩小时也是可见的。当为 0.0 时，不强制执行最小大小。
               minimumPixelSize: 128,
+              // 获取或设置指定模型的最大比例大小的数字属性。此属性用作ModelGraphics#minimumPixelSize的上限
               maximumScale: 20000,
             },
           });
 
+          // 获取或设置相机当前正在跟踪的实体实例
           viewer.trackedEntity = entity;
         }
 

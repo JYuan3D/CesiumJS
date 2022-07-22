@@ -22,6 +22,7 @@
     class="sandcastle-loading"
     data-sandcastle-bucket="bucket-requirejs.html"
   >
+    <!-- 已学习 -->
     <style>
       @import url(../templates/bucket.css);
     </style>
@@ -32,18 +33,24 @@
       window.startup = function (Cesium) {
         "use strict";
         //Sandcastle_Begin
-        const viewer = new Cesium.Viewer("cesiumContainer");
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+          navigationHelpButton: false, // 获取导航帮助按钮
+          animation: false, // 获取动画小部件
+          timeline: false, // 获取时间轴部件
+          fullscreenButton: false, // 获取全屏按钮
+        });
 
         const greenCylinder = viewer.entities.add({
           name: "Green cylinder with black outline",
           position: Cesium.Cartesian3.fromDegrees(-100.0, 40.0, 200000.0),
+          // cylinder: 设置圆柱体
           cylinder: {
-            length: 400000.0,
-            topRadius: 200000.0,
-            bottomRadius: 200000.0,
-            material: Cesium.Color.GREEN.withAlpha(0.5),
-            outline: true,
-            outlineColor: Cesium.Color.DARK_GREEN,
+            length: 400000.0, // 设置length属性来指定圆柱体的长度
+            topRadius: 200000.0, // 设置该属性来指定圆柱体的顶部半径
+            bottomRadius: 200000.0, // 设置该属性来指定圆柱体的底部半径
+            material: Cesium.Color.GREEN.withAlpha(0.5), // 设置该属性定义材质
+            outline: true, // 该属性是指定圆柱体的轮廓
+            outlineColor: Cesium.Color.DARK_GREEN, // 该属性指定圆柱体的轮廓颜色
           },
         });
 
@@ -55,6 +62,7 @@
             topRadius: 0.0,
             bottomRadius: 200000.0,
             material: Cesium.Color.RED,
+            outline: true,
           },
         });
 

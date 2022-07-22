@@ -22,6 +22,7 @@
     class="sandcastle-loading"
     data-sandcastle-bucket="bucket-requirejs.html"
   >
+    <!-- 已学习 -->
     <style>
       @import url(../templates/bucket.css);
       #toolbar {
@@ -138,6 +139,11 @@
         //Sandcastle_Begin
         const viewer = new Cesium.Viewer("cesiumContainer", {
           infoBox: false,
+          navigationHelpButton: false, // 获取导航帮助按钮
+          animation: false, // 获取动画小部件
+          timeline: false, // 获取时间轴部件
+          fullscreenButton: false, // 获取全屏按钮
+
           selectionIndicator: false,
           shadows: true,
           shouldAnimate: true,
@@ -324,6 +330,7 @@
         //Sandcastle_End
         Sandcastle.finishedLoading();
       };
+
       if (typeof Cesium !== "undefined") {
         window.startupCalled = true;
         window.startup(Cesium);

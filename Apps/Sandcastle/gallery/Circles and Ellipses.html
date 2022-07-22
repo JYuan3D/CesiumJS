@@ -25,6 +25,7 @@
     class="sandcastle-loading"
     data-sandcastle-bucket="bucket-requirejs.html"
   >
+    <!-- 已学习 -->
     <style>
       @import url(../templates/bucket.css);
     </style>
@@ -35,17 +36,22 @@
       window.startup = function (Cesium) {
         "use strict";
         //Sandcastle_Begin
-        const viewer = new Cesium.Viewer("cesiumContainer");
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+          navigationHelpButton: false, // 获取导航帮助按钮
+          animation: false, // 获取动画小部件
+          timeline: false, // 获取时间轴部件
+          fullscreenButton: false, // 获取全屏按钮
+        });
 
         const greenCircle = viewer.entities.add({
           position: Cesium.Cartesian3.fromDegrees(-111.0, 40.0, 150000.0),
           name: "Green circle at height with outline",
-          ellipse: {
-            semiMinorAxis: 300000.0,
-            semiMajorAxis: 300000.0,
-            height: 200000.0,
+          ellipse: { // 设置椭圆 - 描述由中心点和半长半短轴定义的椭圆
+            semiMinorAxis: 300000.0, // 设置半短轴的数值属性
+            semiMajorAxis: 300000.0, // 设置半长轴的数值属性
+            height: 200000.0, // 设置椭圆高度的数字属性
             material: Cesium.Color.GREEN,
-            outline: true, // height must be set for outline to display
+            outline: true, // 设置椭圆是否具有轮廓的属性
           },
         });
 
@@ -65,8 +71,8 @@
           ellipse: {
             semiMinorAxis: 150000.0,
             semiMajorAxis: 300000.0,
-            extrudedHeight: 200000.0,
-            rotation: Cesium.Math.toRadians(45),
+            extrudedHeight: 200000.0, // 设置椭圆拉伸高度的数字属性
+            rotation: Cesium.Math.toRadians(0),
             material: Cesium.Color.BLUE.withAlpha(0.5),
             outline: true,
           },

@@ -22,6 +22,7 @@
     class="sandcastle-loading"
     data-sandcastle-bucket="bucket-requirejs.html"
   >
+    <!-- 已学习 -->
     <style>
       @import url(../templates/bucket.css);
     </style>
@@ -32,14 +33,22 @@
       window.startup = function (Cesium) {
         "use strict";
         //Sandcastle_Begin
-        const viewer = new Cesium.Viewer("cesiumContainer");
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+          navigationHelpButton: false, // 获取导航帮助按钮
+          animation: false, // 获取动画小部件
+          timeline: false, // 获取时间轴部件
+          fullscreenButton: false, // 获取全屏按钮
+        });
 
+        // Entity: new Cesium.Entity(options)
         const blueBox = viewer.entities.add({
           name: "Blue box",
           position: Cesium.Cartesian3.fromDegrees(-114.0, 40.0, 300000.0),
+          // 获取或设置box - BoxGraphics
           box: {
-            dimensions: new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
-            material: Cesium.Color.BLUE,
+            // new Cesium.Cartesian3(x, y, z) - 一个3D笛卡尔点
+            dimensions: new Cesium.Cartesian3(400000.0, 300000.0, 500000.0), // 设置Cartesian3 Property属性，box的长度、宽度和高度
+            material: Cesium.Color.BLUE, // 设置box的材质
           },
         });
 
@@ -49,8 +58,8 @@
           box: {
             dimensions: new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
             material: Cesium.Color.RED.withAlpha(0.5),
-            outline: true,
-            outlineColor: Cesium.Color.BLACK,
+            outline: true, // 设置box是否具有轮廓
+            outlineColor: Cesium.Color.BLACK, // 设置指定轮廓颜色
           },
         });
 
@@ -59,7 +68,7 @@
           position: Cesium.Cartesian3.fromDegrees(-100.0, 40.0, 300000.0),
           box: {
             dimensions: new Cesium.Cartesian3(400000.0, 300000.0, 500000.0),
-            fill: false,
+            fill: false, // 设置是否使用提供的材料填充box
             outline: true,
             outlineColor: Cesium.Color.YELLOW,
           },

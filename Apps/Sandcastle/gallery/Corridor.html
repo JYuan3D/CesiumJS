@@ -22,6 +22,7 @@
     class="sandcastle-loading"
     data-sandcastle-bucket="bucket-requirejs.html"
   >
+    <!-- 已学习 -->
     <style>
       @import url(../templates/bucket.css);
     </style>
@@ -32,11 +33,17 @@
       window.startup = function (Cesium) {
         "use strict";
         //Sandcastle_Begin
-        const viewer = new Cesium.Viewer("cesiumContainer");
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+          navigationHelpButton: false, // 获取导航帮助按钮
+          animation: false, // 获取动画小部件
+          timeline: false, // 获取时间轴部件
+          fullscreenButton: false, // 获取全屏按钮
+        });
 
         const redCorridor = viewer.entities.add({
           name: "Red corridor on surface with rounded corners",
           corridor: {
+            // 通过给定一个经度和纬度数值（以度为单位）的数组，返回一个笛卡尔位置数组
             positions: Cesium.Cartesian3.fromDegreesArray([
               -100.0,
               40.0,
@@ -53,6 +60,8 @@
         const greenCorridor = viewer.entities.add({
           name: "Green corridor at height with mitered corners and outline",
           corridor: {
+            // fromDegreesArray: 通过给定一个经度和纬度数值（以度为单位）的数组，返回一个笛卡尔位置数组
+            // positions: 该属性指定定义corridor中心线的 Cartesian3 位置数组
             positions: Cesium.Cartesian3.fromDegreesArray([
               -90.0,
               40.0,
@@ -63,6 +72,8 @@
             ]),
             height: 100000.0,
             width: 200000.0,
+            // cornerType: 设置CornerType属性，来定义角的样式
+            // 默认值为: CornerType.ROUNDED
             cornerType: Cesium.CornerType.MITERED,
             material: Cesium.Color.GREEN,
             outline: true, // height required for outlines to display
@@ -82,7 +93,7 @@
             ]),
             height: 200000.0,
             extrudedHeight: 100000.0,
-            width: 200000.0,
+            width: 200000.0, // 设置数字属性来指定轮廓的宽度
             cornerType: Cesium.CornerType.BEVELED,
             material: Cesium.Color.BLUE.withAlpha(0.5),
             outline: true, // height or extrudedHeight must be set for outlines to display
