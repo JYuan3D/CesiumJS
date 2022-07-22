@@ -26,6 +26,7 @@
     class="sandcastle-loading"
     data-sandcastle-bucket="bucket-requirejs.html"
   >
+    <!-- 已学习 -->
     <style>
       @import url(../templates/bucket.css);
       #toolbar {
@@ -58,29 +59,35 @@
         //Sandcastle_Begin
         const viewer = new Cesium.Viewer("cesiumContainer", {
           shadows: true,
+          navigationHelpButton: false, // 获取导航帮助按钮
+          animation: false, // 获取动画小部件
+          timeline: false, // 获取时间轴部件
+          fullscreenButton: false, // 获取全屏按钮
         });
 
+        /**
+         * scene: 获取场景
+         * Cesium虚拟场景的容器，该容器包含所有3D图形对象和状态。
+         * 一般不直接创建场景，相反，它是由CesiumWidget隐式创建的。
+         * scene.globe: 获取深度测试的椭球
+         * scene.globe.depthTestAgainstTerrain: 如果广告牌、折线、标签等图元要对地形表面进行深度测试，则为true。
+         */
         viewer.scene.globe.depthTestAgainstTerrain = true;
 
-        const viewModel = {
-          height: 0,
-        };
-
-        Cesium.knockout.track(viewModel);
-
-        const toolbar = document.getElementById("toolbar");
-        Cesium.knockout.applyBindings(viewModel, toolbar);
-
+        // Cesium3DTileset: 一种3D瓦片瓦片集，用于流式传输大量的各种各样的3D地理控件数据集。
         const tileset = new Cesium.Cesium3DTileset({
           url: "../../SampleData/Cesium3DTiles/Tilesets/Tileset/tileset.json",
         });
 
+        /**
+         * 这个Promise是当瓦片集的根瓦片被加载。并且瓦片集准备好渲染时，触发的。
+         */
         tileset.readyPromise
           .then(function (tileset) {
-            viewer.scene.primitives.add(tileset);
+            viewer.scene.primitives.add(tileset); // primitives是获取primitives的集合
             viewer.zoomTo(
               tileset,
-              new Cesium.HeadingPitchRange(
+              new Cesium.HeadingPitchRange( // 定义局部框架中的航向角、俯仰角和范围
                 0.0,
                 -0.5,
                 tileset.boundingSphere.radius * 2.0
@@ -91,6 +98,22 @@
             console.log(error);
           });
 
+        // step1: 声明viewModel
+        const viewModel = {
+          height: 0,
+        };
+
+        /**
+         * Cesium.knock能够使Cesium球体监听html控件, 从而根据控件的值实时改变一些地图属性。
+         */
+        // step2: 监测viewModel中的属性
+        Cesium.knockout.track(viewModel);
+
+        // step3: 将viewModel对象与HTML进行绑定
+        const toolbar = document.getElementById("toolbar");
+        Cesium.knockout.applyBindings(viewModel, toolbar);
+
+        // step4: 监听控件值的变化
         Cesium.knockout
           .getObservable(viewModel, "height")
           .subscribe(function (height) {
@@ -99,6 +122,10 @@
               return;
             }
 
+            console.log("height", height);
+
+            // Cartographic(地图的): 由经度、纬度和高度定义的位置
+            //
             const cartographic = Cesium.Cartographic.fromCartesian(
               tileset.boundingSphere.center
             );
