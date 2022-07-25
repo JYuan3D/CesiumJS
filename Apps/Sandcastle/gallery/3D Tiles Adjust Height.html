@@ -122,23 +122,28 @@
               return;
             }
 
-            console.log("height", height);
+            // console.log("height", height);
 
             // Cartographic(地图的): 由经度、纬度和高度定义的位置
-            //
+            // 从笛卡尔位置创建一个新的Cartographic实例（返回的值将以度表示）
             const cartographic = Cesium.Cartographic.fromCartesian(
               tileset.boundingSphere.center
             );
+            // 一个3D笛卡尔点
+            // 通过以弧度为单位的经度和纬度值返回一个Cartesian3位置
             const surface = Cesium.Cartesian3.fromRadians(
               cartographic.longitude,
               cartographic.latitude,
               0.0
             );
+            // 一个3D笛卡尔点
+            // 通过以弧度为单位的经度和纬度值返回一个Cartesian3位置
             const offset = Cesium.Cartesian3.fromRadians(
               cartographic.longitude,
               cartographic.latitude,
               height
             );
+            // 计算两个笛卡尔的分量差
             const translation = Cesium.Cartesian3.subtract(
               offset,
               surface,
