@@ -35,6 +35,9 @@
         //Sandcastle_Begin
         // A simple demo of 3D Tiles feature picking with hover and select behavior
         // Building data courtesy of NYC OpenData portal: http://www1.nyc.gov/site/doitt/initiatives/3d-building.page
+        Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkOGU4N2NlMC1kNGIyLTQ1MTEtOGZhYS01ZTJkZTExYmM3NTIiLCJpZCI6OTk1ODMsImlhdCI6MTY1NjU3NTY4NH0.Zk4pIkgdhfRGyMhB1RB45RR04joFp3ERUtzVsOzq8iM";
+
         const viewer = new Cesium.Viewer("cesiumContainer", {
           terrainProvider: Cesium.createWorldTerrain(),
         });

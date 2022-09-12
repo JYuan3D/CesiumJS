@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <!-- Use Chrome Frame in IE -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Adjust the height of a 3D Tiles tileset."
+    />
+    <meta name="cesium-sandcastle-labels" content="3D Tiles" />
+    <title>Cesium Demo</title>
+    <script type="text/javascript" src="../Sandcastle-header.js"></script>
+    <script
+      type="text/javascript"
+      src="../../../Build/CesiumUnminified/Cesium.js"
+      nomodule
+    ></script>
+    <script type="module" src="../load-cesium-es6.js"></script>
+  </head>
+  <body
+    class="sandcastle-loading"
+    data-sandcastle-bucket="bucket-requirejs.html"
+  >
+    <!-- 已学习 -->
+    <style>
+      @import url(../templates/bucket.css);
+      #toolbar {
+        background: rgba(42, 42, 42, 0.8);
+        padding: 4px;
+        border-radius: 4px;
+      }
+      #toolbar input {
+        vertical-align: middle;
+        padding-top: 2px;
+        padding-bottom: 2px;
+      }
+    </style>
+    <div id="cesiumContainer" class="fullSize"></div>
+    <div id="loadingOverlay"><h1>Loading...</h1></div>
+    <div id="toolbar">
+      <div>Height</div>
+      <input
+        type="range"
+        min="-100.0"
+        max="100.0"
+        step="1"
+        data-bind="value: height, valueUpdate: 'input'"
+      />
+      <input type="text" size="5" data-bind="value: height" />
+    </div>
+    <script id="cesium_sandcastle_script">
+      window.startup = function (Cesium) {
+        "use strict";
+        //Sandcastle_Begin
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+          shadows: true,
+          navigationHelpButton: false, // 获取导航帮助按钮
+          animation: false, // 获取动画小部件
+          timeline: false, // 获取时间轴部件
+          fullscreenButton: false, // 获取全屏按钮
+        });
+
+        /**
+         * scene: 获取场景
+         * Cesium虚拟场景的容器，该容器包含所有3D图形对象和状态。
+         * 一般不直接创建场景，相反，它是由CesiumWidget隐式创建的。
+         * scene.globe: 获取深度测试的椭球
+         * scene.globe.depthTestAgainstTerrain: 如果广告牌、折线、标签等图元要对地形表面进行深度测试，则为true。
+         */
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        // Cesium3DTileset: 一种3D瓦片瓦片集，用于流式传输大量的各种各样的3D地理控件数据集。
+        const tileset = new Cesium.Cesium3DTileset({
+          // Batched/
+          // url: "../../SampleData/Cesium3DTiles/Tilesets/Tileset/tileset.json",
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedColors/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedColorsMix/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedAnimated/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedColorsTranslucent/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedDeprecated1/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedDeprecated2/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedExpiration/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedNoBatchIds/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedTextured/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedTranslucent/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedTranslucentOpaqueMix/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedWGS84/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedWithBatchTable/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedWithBatchTableBinary/tileset.json"
+          // url: "http://192.168.13.203:8888/static/Batched/BatchedWithTransformRegion/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedWithBoundingSphere/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedWithoutBatchTable/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedWithRtcCenter/tileset.json"
+          // url: "http://127.0.0.1:8888/static/Batched/BatchedWithTransformSphere/tileset.json"
+          // Composite/
+          // url: "http://127.0.0.1:8888/static/Composite/Composite/tileset.json"
+          // Main
+          // url: "https://storage.googleapis.com/ogc-3d-tiles/ayutthaya/tiledWithSkirts/tileset.json"
+          // url: "http://202.104.149.202:8099/BSQ/Scene/3DTiles.json"
+          // url: "http://202.104.149.202:8099/BSQ/Scene_New/3DTiles.json"
+          url: "http://192.168.13.203:8888/static/3Dtiles/3Dtiles/tileset.json"
+        });
+
+        /**
+         * 这个Promise是当瓦片集的根瓦片被加载。并且瓦片集准备好渲染时，触发的。
+         */
+        tileset.readyPromise
+          .then(function (tileset) {
+            viewer.scene.primitives.add(tileset); // primitives是获取primitives的集合
+            viewer.zoomTo(
+              tileset,
+              new Cesium.HeadingPitchRange( // 定义局部框架中的航向角、俯仰角和范围
+                0.0,
+                -0.5,
+                tileset.boundingSphere.radius * 2.0
+              )
+            );
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+        // step1: 声明viewModel
+        const viewModel = {
+          height: 0,
+        };
+
+        /**
+         * Cesium.knock能够使Cesium球体监听html控件, 从而根据控件的值实时改变一些地图属性。
+         */
+        // step2: 监测viewModel中的属性
+        Cesium.knockout.track(viewModel);
+
+        // step3: 将viewModel对象与HTML进行绑定
+        const toolbar = document.getElementById("toolbar");
+        Cesium.knockout.applyBindings(viewModel, toolbar);
+
+        // step4: 监听控件值的变化
+        Cesium.knockout
+          .getObservable(viewModel, "height")
+          .subscribe(function (height) {
+            height = Number(height);
+            if (isNaN(height)) {
+              return;
+            }
+
+            // Cartographic(地图的): 由经度、纬度和高度定义的位置
+            // 从笛卡尔位置创建一个新的Cartographic实例（返回的值将以度表示）
+            const cartographic = Cesium.Cartographic.fromCartesian(
+              tileset.boundingSphere.center
+            );
+            // 一个3D笛卡尔点
+            // 通过以弧度为单位的经度和纬度值返回一个Cartesian3位置
+            const surface = Cesium.Cartesian3.fromRadians(
+              cartographic.longitude,
+              cartographic.latitude,
+              0.0
+            );
+            // 一个3D笛卡尔点
+            // 通过以弧度为单位的经度和纬度值返回一个Cartesian3位置
+            const offset = Cesium.Cartesian3.fromRadians(
+              cartographic.longitude,
+              cartographic.latitude,
+              height
+            );
+            // 计算两个笛卡尔的分量差
+            const translation = Cesium.Cartesian3.subtract(
+              offset,
+              surface,
+              new Cesium.Cartesian3()
+            );
+            tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+          });
+
+        //Sandcastle_End
+        Sandcastle.finishedLoading();
+      };
+      if (typeof Cesium !== "undefined") {
+        window.startupCalled = true;
+        window.startup(Cesium);
+      }
+    </script>
+  </body>
+</html>

@@ -106,10 +106,12 @@
     <script id="cesium_sandcastle_script">
       window.startup = function (Cesium) {
         "use strict";
+
         //Sandcastle_Begin
         const viewer = new Cesium.Viewer("cesiumContainer", {
           baseLayerPicker: false,
         });
+        console.log("测试图层")
         const imageryLayers = viewer.imageryLayers;
 
         const viewModel = {

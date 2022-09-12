@@ -32,6 +32,70 @@
       window.startup = function (Cesium) {
         "use strict";
         //Sandcastle_Begin
+        function addModel(viewer) {
+          viewer.entities.add({
+            position: Cesium.Cartesian3.fromRadians(
+              -2.1463338399937277,
+              0.6677959688982861,
+              32.18991401746337
+            ),
+            model: {
+              uri: "../../SampleData/models/CesiumBalloon/CesiumBalloon.glb",
+              scale: 7.0,
+            },
+          });
+
+          viewer.entities.add({
+            position: Cesium.Cartesian3.fromRadians(
+              -2.14633449752228,
+              0.667796065242357,
+              24.47647034111423
+            ),
+            cylinder: {
+              length: 8.0,
+              topRadius: 2.0,
+              bottomRadius: 2.0,
+              material: Cesium.Color.WHITE,
+            },
+          });
+
+          viewer.entities.add({
+            position: Cesium.Cartesian3.fromRadians(
+              -2.1463332294173365,
+              0.6677959755384729,
+              26.2876064083145
+            ),
+            ellipsoid: {
+              radii: new Cesium.Cartesian3(2.5, 2.5, 2.5),
+              material: Cesium.Color.WHITE.withAlpha(0.5),
+            },
+          });
+        }
+
+        function setTime(viewer, iso8601) {
+          const currentTime = Cesium.JulianDate.fromIso8601(iso8601); // 从ISO 8601日期创建一个新实例
+          const endTime = Cesium.JulianDate.addDays(
+            currentTime,
+            2,
+            new Cesium.JulianDate()
+          );
+
+          viewer.clock.currentTime = currentTime; // 当前时间
+          // 将视图设置为提供的时间
+          viewer.timeline.zoomTo(currentTime, endTime);
+        }
+
+        function reset(viewer, sunLight) {
+          // 设置场景默认值
+          scene.light = sunLight;
+          // 是否启用对大气和雾的动态照明效果（这仅在enableLighting为true时生效） - 默认值为true
+          scene.globe.dynamicAtmosphereLighting = true;
+          // 动态氛围照明是否使用太阳方向而不是场景的光线方向。
+          // 这仅在（enableLighting）和（dynamicAtmosphereLighting）为true时生效。- 默认值为false
+          scene.globe.dynamicAtmosphereLightingFromSun = false;
+          setTime(viewer, "2020-01-09T23:00:39.018261982600961346Z");
+        }
+
         const viewer = new Cesium.Viewer("cesiumContainer", {
           terrainProvider: Cesium.createWorldTerrain({
             requestWaterMask: true,
@@ -42,26 +106,30 @@
         const scene = viewer.scene;
         scene.globe.enableLighting = true;
 
-        const scratchIcrfToFixed = new Cesium.Matrix3();
-        const scratchMoonPosition = new Cesium.Cartesian3();
-        const scratchMoonDirection = new Cesium.Cartesian3();
+        const scratchIcrfToFixed = new Cesium.Matrix3(); // 一个3x3矩阵
+        const scratchMoonPosition = new Cesium.Cartesian3(); // 一个3D笛卡尔点
+        const scratchMoonDirection = new Cesium.Cartesian3(); // 一个3D笛卡尔点
 
         function getMoonDirection(result) {
           result = Cesium.defined(result) ? result : new Cesium.Cartesian3();
           const icrfToFixed = scratchIcrfToFixed;
-          const date = viewer.clock.currentTime;
+          const date = viewer.clock.currentTime; // 当前时间
           if (
             !Cesium.defined(
+              // 旋转矩阵，如果尚未加载进行转换所需的数据，则为undefined
               Cesium.Transforms.computeIcrfToFixedMatrix(date, icrfToFixed)
             )
           ) {
+            // 修改icrfToFixed 3x3矩阵
             Cesium.Transforms.computeTemeToPseudoFixedMatrix(date, icrfToFixed);
           }
+          // 计算月球在地心惯性系中的位置，返回计算到的月球位置
           const moonPosition = Cesium.Simon1994PlanetaryPositions.computeMoonPositionInEarthInertialFrame(
             date,
             scratchMoonPosition
           );
           Cesium.Matrix3.multiplyByVector(
+            // 计算矩阵和列向量的乘积，返回是修改后的结果参数
             icrfToFixed,
             moonPosition,
             moonPosition
@@ -70,6 +138,7 @@
             moonPosition,
             scratchMoonDirection
           );
+          // 否定提供的笛卡尔坐标，返回修改后的结果参数
           return Cesium.Cartesian3.negate(moonDirection, result);
         }
 
@@ -79,14 +148,17 @@
             0.8842635425193919,
             0.39729481195458805
           ),
+          color: Cesium.Color.WHITE,
+          intensity: 1.0,
         });
 
         const flashlight = new Cesium.DirectionalLight({
-          direction: scene.camera.directionWC, // Updated every frame
+          // 获取相机在世界坐标中的视图方向
+          direction: scene.camera.directionWC, // 每一帧都会更新
         });
 
         const moonLight = new Cesium.DirectionalLight({
-          direction: getMoonDirection(), // Updated every frame
+          direction: getMoonDirection(), // 每一帧都会更新
           color: new Cesium.Color(0.9, 0.925, 1.0),
           intensity: 0.5,
         });
@@ -95,12 +167,14 @@
 
         const customColorLight = new Cesium.DirectionalLight({
           direction: new Cesium.Cartesian3(
-            -0.2454278300540191,
+            0.2454278300540191,
             0.8842635425193919,
             0.39729481195458805
           ),
           color: Cesium.Color.fromCssColorString("#deca7c"),
         });
+
+        addModel(viewer);
 
         scene.preRender.addEventListener(function (scene, time) {
           if (scene.light === flashlight) {
@@ -112,64 +186,6 @@
             scene.light.direction = getMoonDirection(scene.light.direction);
           }
         });
-
-        viewer.entities.add({
-          position: Cesium.Cartesian3.fromRadians(
-            -2.1463338399937277,
-            0.6677959688982861,
-            32.18991401746337
-          ),
-          model: {
-            uri: "../../SampleData/models/CesiumBalloon/CesiumBalloon.glb",
-            scale: 7.0,
-          },
-        });
-
-        viewer.entities.add({
-          position: Cesium.Cartesian3.fromRadians(
-            -2.14633449752228,
-            0.667796065242357,
-            24.47647034111423
-          ),
-          cylinder: {
-            length: 8.0,
-            topRadius: 2.0,
-            bottomRadius: 2.0,
-            material: Cesium.Color.WHITE,
-          },
-        });
-
-        viewer.entities.add({
-          position: Cesium.Cartesian3.fromRadians(
-            -2.1463332294173365,
-            0.6677959755384729,
-            26.2876064083145
-          ),
-          ellipsoid: {
-            radii: new Cesium.Cartesian3(2.5, 2.5, 2.5),
-            material: Cesium.Color.WHITE.withAlpha(0.5),
-          },
-        });
-
-        function setTime(iso8601) {
-          const currentTime = Cesium.JulianDate.fromIso8601(iso8601);
-          const endTime = Cesium.JulianDate.addDays(
-            currentTime,
-            2,
-            new Cesium.JulianDate()
-          );
-
-          viewer.clock.currentTime = currentTime;
-          viewer.timeline.zoomTo(currentTime, endTime);
-        }
-
-        function reset() {
-          // Set scene defaults
-          scene.light = sunLight;
-          scene.globe.dynamicAtmosphereLighting = true;
-          scene.globe.dynamicAtmosphereLightingFromSun = false;
-          setTime("2020-01-09T23:00:39.018261982600961346Z");
-        }
 
         viewer.scene.camera.setView({
           destination: new Cesium.Cartesian3(
@@ -189,14 +205,14 @@
           {
             text: "Fixed lighting",
             onselect: function () {
-              reset();
+              reset(viewer, sunLight);
               scene.light = directionalLight;
             },
           },
           {
             text: "Flashlight",
             onselect: function () {
-              reset();
+              reset(viewer, sunLight);
               scene.light = flashlight;
               scene.globe.dynamicAtmosphereLighting = false;
             },
@@ -204,22 +220,22 @@
           {
             text: "Moonlight",
             onselect: function () {
-              reset();
+              reset(viewer, sunLight);
               scene.light = moonLight;
               scene.globe.dynamicAtmosphereLightingFromSun = true;
-              setTime("2020-01-10T05:29:41.17946898164518643Z");
+              setTime(viewer, "2020-01-10T05:29:41.17946898164518643Z");
             },
           },
           {
             text: "Sunlight",
             onselect: function () {
-              reset();
+              reset(viewer, sunLight);
             },
           },
           {
             text: "Custom color",
             onselect: function () {
-              reset();
+              reset(viewer, sunLight);
               scene.light = customColorLight;
             },
           },

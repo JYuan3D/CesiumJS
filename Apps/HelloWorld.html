@@ -31,8 +31,26 @@
     <!-- step3: cesium view存在于该div中 -->
     <div id="cesiumContainer"></div>
     <script>
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkOGU4N2NlMC1kNGIyLTQ1MTEtOGZhYS01ZTJkZTExYmM3NTIiLCJpZCI6OTk1ODMsImlhdCI6MTY1NjU3NTY4NH0.Zk4pIkgdhfRGyMhB1RB45RR04joFp3ERUtzVsOzq8iM";
       // step4: 最终创建cesium viewer
-      const viewer = new Cesium.Viewer("cesiumContainer");
+      const viewer = new Cesium.Viewer("cesiumContainer", {
+        selectionIndicator: false,
+        animation: false,
+        baseLayerPicker: false,
+        // geocoder: false,
+        timeline: false,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        infoBox: false,
+        fullscreenButton: false,
+        homeButton: false,
+        // 线上底图链接
+        imageryProvider: new Cesium.UrlTemplateImageryProvider({
+          url:
+            "https://webst02.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",
+        }),
+      });
     </script>
   </body>
 </html>

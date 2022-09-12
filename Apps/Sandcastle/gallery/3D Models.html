@@ -89,7 +89,7 @@
           /**
            * entities: 获取未绑定到特定数据源的实体集合。这是dataSourceDisplay.defaultDataSource快捷方式。
            * add(entity): 将实体添加到集合中。
-           * 
+           *
            * Entity: new Cesium.Entity(options)
            * 实体实例将多种形式对的可视化聚合到一个高级对象中。
            * 它们可以手动创建并添加到Viewer#entities或由数据源生成，例如CzmlDataSource 和 GeoJsonDataSource。
@@ -98,7 +98,8 @@
             name: url, // name: 获取或设置对象的名称，该名称供最终用户使用，无需唯一。
             position: position, // 获取或设置位置。
             orientation: orientation, // 获取或设置方向
-            model: { // 获取或设置模型(ModelGraphics)
+            model: {
+              // 获取或设置模型(ModelGraphics)
               uri: url, // 获取或设置字符串属性，指定Gltf资产的URI
               // 获取或设置数字属性，指定模型的近似最小像素大小，而不考虑缩放。这可用于确保模型即使在查看器缩小时也是可见的。当为 0.0 时，不强制执行最小大小。
               minimumPixelSize: 128,
@@ -106,6 +107,25 @@
               maximumScale: 20000,
             },
           });
+
+          const hprRollZero = new Cesium.HeadingPitchRoll();
+          const modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(
+            position,
+            hprRollZero,
+            Cesium.Ellipsoid.WGS84,
+            Cesium.Transforms.eastNorthUpToFixedFrame
+          );
+
+          viewer.scene.primitives.add(
+            // 绘制由转换为世界坐标的矩阵定义的参考系的轴，即地球的 WGS84 坐标。最突出的例子是原语模型矩阵。
+            // X 轴为红色； Y为绿色； Z是蓝色的。
+            // 这仅用于调试；它没有针对生产使用进行优化。
+            new Cesium.DebugModelMatrixPrimitive({
+              modelMatrix: modelMatrix,
+              length: 100.0,
+              width: 10.0,
+            })
+          );
 
           // 获取或设置相机当前正在跟踪的实体实例
           viewer.trackedEntity = entity;
@@ -198,6 +218,8 @@
             },
           },
         ];
+
+        
 
         // 沙盒
         Sandcastle.addToolbarMenu(options);

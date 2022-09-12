@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8" />
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <title>Hello World!</title>
+    <!-- step1: 引入Cesium.js，该javascript定义了Cesium object -->
+    <script src="../../../Build/Cesium/Cesium.js"></script>
+    <style>
+      /* step2: 导入Cesium Viewer widget的样式 */
+      @import url(../../../Build/Cesium/Widgets/widgets.css);
+      html,
+      body,
+      #cesiumContainer {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- step3: cesium view存在于该div中 -->
+    <div id="cesiumContainer"></div>
+    <script>
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkOGU4N2NlMC1kNGIyLTQ1MTEtOGZhYS01ZTJkZTExYmM3NTIiLCJpZCI6OTk1ODMsImlhdCI6MTY1NjU3NTY4NH0.Zk4pIkgdhfRGyMhB1RB45RR04joFp3ERUtzVsOzq8iM";
+      // step4: 最终创建cesium viewer
+      const viewer = new Cesium.Viewer("cesiumContainer", {
+        selectionIndicator: false,
+        animation: false,
+        baseLayerPicker: false,
+        // geocoder: false,
+        timeline: false,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        infoBox: false,
+        fullscreenButton: false,
+        homeButton: false,
+        // 线上底图链接
+        imageryProvider: new Cesium.UrlTemplateImageryProvider({
+          url:
+            "https://webst02.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",
+        }),
+      });
+
+      // 创建一个表示当前系统时间的新实例。
+      // 这相当于调用 JulianDate.fromDate(new Date());。
+      let current1 = Cesium.JulianDate.now(new Date());
+      // current1.dayNumber: 获取或设置天数
+      // current1.secondsOfDay: 获取或设置当天的秒数
+      console.log("current1", current1.dayNumber, current1.secondsOfDay);
+
+      let current2 = Cesium.JulianDate.fromDate(new Date()); //获取当前时间，由js中的UTC标准转换为TAI标准
+      console.log("current2", current2.dayNumber, current2.secondsOfDay);
+
+      var addDays = Cesium.JulianDate.addDays(
+        current1,
+        1,
+        new Cesium.JulianDate()
+      );
+      console.log("添加天数：", addDays.dayNumber, addDays.secondsOfDay);
+      var addHours = Cesium.JulianDate.addHours(
+        current1,
+        1,
+        new Cesium.JulianDate()
+      );
+      console.log("添加小时：", addHours.dayNumber, addHours.secondsOfDay);
+      var addSeconds = Cesium.JulianDate.addSeconds(
+        current1,
+        1,
+        new Cesium.JulianDate()
+      );
+      console.log("添加秒数：", addSeconds.dayNumber, addSeconds.secondsOfDay);
+
+      var diffDays = Cesium.JulianDate.daysDifference(addDays, addHours);
+      console.log("相差天数：", diffDays);
+      var diffSeconds = Cesium.JulianDate.secondsDifference(
+        addHours,
+        addSeconds
+      );
+      console.log("相差秒数：", diffSeconds);
+    </script>
+  </body>
+</html>

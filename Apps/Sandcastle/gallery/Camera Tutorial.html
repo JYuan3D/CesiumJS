@@ -34,21 +34,19 @@
       <table class="infoPanel">
         <tbody>
           <tr>
-            <td>Click on the Cesium display to start.</td>
+            <td>点击Cesium显示开始</td>
           </tr>
           <tr>
-            <td>w/s - move forward/backward</td>
+            <td>w/s - 前进/后退</td>
           </tr>
           <tr>
-            <td>a/d - move left/right</td>
+            <td>a/d - 向左/向右移动</td>
           </tr>
           <tr>
-            <td>q/e - move up/down</td>
+            <td>q/e - 向上/向下移动</td>
           </tr>
           <tr>
-            <td>
-              left mouse button down plus mouse move changes the look direction
-            </td>
+            <td>鼠标左键按下 + 鼠标移动改变了观察方向</td>
           </tr>
         </tbody>
       </table>
@@ -65,9 +63,10 @@
         canvas.onclick = function () {
           canvas.focus();
         };
+        // 椭球体
         const ellipsoid = scene.globe.ellipsoid;
 
-        // disable the default event handlers
+        // 禁用默认事件处理程序
         scene.screenSpaceCameraController.enableRotate = false;
         scene.screenSpaceCameraController.enableTranslate = false;
         scene.screenSpaceCameraController.enableZoom = false;
@@ -76,6 +75,7 @@
 
         let startMousePosition;
         let mousePosition;
+
         const flags = {
           looking: false,
           moveForward: false,
@@ -144,6 +144,8 @@
           false
         );
 
+        // Clock: 一个简单的时钟，用于跟踪模拟时间。
+        // Clock.onTick: Event
         viewer.clock.onTick.addEventListener(function (clock) {
           const camera = viewer.camera;
 
@@ -151,7 +153,7 @@
             const width = canvas.clientWidth;
             const height = canvas.clientHeight;
 
-            // Coordinate (0.0, 0.0) will be where the mouse was clicked.
+            // 坐标(0.0, 0.0)将是鼠标单击的位置。
             const x = (mousePosition.x - startMousePosition.x) / width;
             const y = -(mousePosition.y - startMousePosition.y) / height;
 
@@ -160,12 +162,11 @@
             camera.lookUp(y * lookFactor);
           }
 
-          // Change movement speed based on the distance of the camera to the surface of the ellipsoid.
+          // 根据相机到椭球表面的距离改变移动速度。
           const cameraHeight = ellipsoid.cartesianToCartographic(
             camera.position
           ).height;
-          const moveRate = cameraHeight / 100.0;
-
+          const moveRate = cameraHeight / 100.0; // 距离越近，速度越慢
           if (flags.moveForward) {
             camera.moveForward(moveRate);
           }

@@ -19,17 +19,17 @@ import Primitive from "./Primitive.js";
 import SceneMode from "./SceneMode.js";
 
 /**
- * A tile bounding volume specified as a longitude/latitude/height region.
+ * 指定为经度/纬度/高度区域的tile边界约束体
  * @alias TileBoundingRegion
  * @constructor
  *
- * @param {Object} options Object with the following properties:
- * @param {Rectangle} options.rectangle The rectangle specifying the longitude and latitude range of the region.
- * @param {Number} [options.minimumHeight=0.0] The minimum height of the region.
- * @param {Number} [options.maximumHeight=0.0] The maximum height of the region.
- * @param {Ellipsoid} [options.ellipsoid=Cesium.Ellipsoid.WGS84] The ellipsoid.
- * @param {Boolean} [options.computeBoundingVolumes=true] True to compute the {@link TileBoundingRegion#boundingVolume} and
- *                  {@link TileBoundingVolume#boundingSphere}. If false, these properties will be undefined.
+ * @param {Object} options 具有以下属性的对象:
+ * @param {Rectangle} options.rectangle 该矩形是指定经度和纬度的区域范围
+ * @param {Number} [options.minimumHeight=0.0] 区域的最小高度
+ * @param {Number} [options.maximumHeight=0.0] 区域的最大高度
+ * @param {Ellipsoid} [options.ellipsoid=Cesium.Ellipsoid.WGS84] 椭球体
+ * @param {Boolean} [options.computeBoundingVolumes=true] True 来计算 {@link TileBoundingRegion#boundingVolume} 和
+ *                  {@link TileBoundingVolume#boundingSphere}. 如果为false，这些属性将是undefined的。
  *
  * @private
  */

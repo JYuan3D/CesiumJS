@@ -33,24 +33,22 @@
       <table class="infoPanel">
         <tbody>
           <tr>
-            <td>
-              Click on the 3D window then use the keyboard to change settings.
-            </td>
+            <td>单击3D窗口，然后使用键盘更改设置</td>
           </tr>
           <tr>
-            <td>Heading: <span id="heading"></span>°</td>
+            <td>Heading(Heading是围绕Z轴旋转): <span id="heading"></span>°</td>
           </tr>
           <tr>
             <td>← to left/→ to right</td>
           </tr>
           <tr>
-            <td>Pitch: <span id="pitch"></span>°</td>
+            <td>Pitch(Pitch是围绕Y轴旋转): <span id="pitch"></span>°</td>
           </tr>
           <tr>
             <td>↑ to up/↓ to down</td>
           </tr>
           <tr>
-            <td>roll: <span id="roll"></span>°</td>
+            <td>roll(roll是围绕X轴旋转): <span id="roll"></span>°</td>
           </tr>
           <tr>
             <td>← + ⇧ left/→ + ⇧ right</td>
@@ -63,7 +61,7 @@
           </tr>
           <tr>
             <td>
-              following aircraft
+              跟随飞机
               <input id="fromBehind" type="checkbox" />
             </td>
           </tr>
@@ -79,14 +77,13 @@
         });
 
         const canvas = viewer.canvas;
-        canvas.setAttribute("tabindex", "0"); // needed to put focus on the canvas
+        canvas.setAttribute("tabindex", "0"); // 需要把focus放在画布上
         canvas.addEventListener("click", function () {
           canvas.focus();
         });
         canvas.focus();
 
         const scene = viewer.scene;
-
         const pathPosition = new Cesium.SampledPositionProperty();
         const entityPath = viewer.entities.add({
           position: pathPosition,
@@ -139,14 +136,33 @@
           })
         );
 
+        const hprRollZero = new Cesium.HeadingPitchRoll();
+        const modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(
+          position,
+          hprRollZero,
+          Cesium.Ellipsoid.WGS84,
+          Cesium.Transforms.eastNorthUpToFixedFrame
+        );
+
+        viewer.scene.primitives.add(
+          // 绘制由转换为世界坐标的矩阵定义的参考系的轴，即地球的 WGS84 坐标。最突出的例子是原语模型矩阵。
+          // X 轴为红色； Y为绿色； Z是蓝色的。
+          // 这仅用于调试；它没有针对生产使用进行优化。
+          new Cesium.DebugModelMatrixPrimitive({
+            modelMatrix: modelMatrix,
+            length: 10000000.0,
+            width: 10.0,
+          })
+        );
+
         planePrimitive.readyPromise.then(function (model) {
-          // Play and loop all animations at half-speed
+          // 以半速播放和循环所有动画
           model.activeAnimations.addAll({
             multiplier: 0.5,
             loop: Cesium.ModelAnimationLoop.REPEAT,
           });
 
-          // Zoom to model
+          // 缩放至模型
           r = 2.0 * Math.max(model.boundingSphere.radius, camera.frustum.near);
           controller.minimumZoomDistance = r * 0.5;
           Cesium.Matrix4.multiplyByPoint(
@@ -166,10 +182,10 @@
           switch (e.keyCode) {
             case 40:
               if (e.shiftKey) {
-                // speed down
+                // speed down（减速）
                 speed = Math.max(--speed, 1);
               } else {
-                // pitch down
+                // pitch down（向上俯视）
                 hpRoll.pitch -= deltaRadians;
                 if (hpRoll.pitch < -Cesium.Math.TWO_PI) {
                   hpRoll.pitch += Cesium.Math.TWO_PI;
@@ -178,10 +194,10 @@
               break;
             case 38:
               if (e.shiftKey) {
-                // speed up
+                // speed up（加速）
                 speed = Math.min(++speed, 100);
               } else {
-                // pitch up
+                // pitch up（向上俯视）
                 hpRoll.pitch += deltaRadians;
                 if (hpRoll.pitch > Cesium.Math.TWO_PI) {
                   hpRoll.pitch -= Cesium.Math.TWO_PI;
@@ -190,13 +206,13 @@
               break;
             case 39:
               if (e.shiftKey) {
-                // roll right
+                // roll right（向右翻滚）
                 hpRoll.roll += deltaRadians;
                 if (hpRoll.roll > Cesium.Math.TWO_PI) {
                   hpRoll.roll -= Cesium.Math.TWO_PI;
                 }
               } else {
-                // turn right
+                // turn right（向右转弯）
                 hpRoll.heading += deltaRadians;
                 if (hpRoll.heading > Cesium.Math.TWO_PI) {
                   hpRoll.heading -= Cesium.Math.TWO_PI;
@@ -205,13 +221,13 @@
               break;
             case 37:
               if (e.shiftKey) {
-                // roll left until
+                // roll left until（向左翻滚直到）
                 hpRoll.roll -= deltaRadians;
                 if (hpRoll.roll < 0.0) {
                   hpRoll.roll += Cesium.Math.TWO_PI;
                 }
               } else {
-                // turn left
+                // turn left（向左转弯）
                 hpRoll.heading -= deltaRadians;
                 if (hpRoll.heading < 0.0) {
                   hpRoll.heading += Cesium.Math.TWO_PI;
