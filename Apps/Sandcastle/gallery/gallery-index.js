@@ -643,6 +643,11 @@ const gallery_demos = [
     img: "Manually Controlled Animation.jpg",
   },
   {
+    name: "Manually Controlled Animation Learn",
+    isNew: true,
+    img: "Manually Controlled Animation Learn.jpg",
+  },
+  {
     name: "Map Pins",
     isNew: false,
     img: "Map Pins.jpg",
